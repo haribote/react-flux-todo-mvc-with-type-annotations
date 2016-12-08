@@ -1,26 +1,37 @@
+///<reference path="../node_modules/@types/react/index.d.ts"/>
 /**
  * @file アプリケーションコンテナー
  */
 
 import * as React from 'react';
 import { Container } from 'flux/utils';
+import newTodoTitleStore, { NewTodoTitleStore } from './new-todo-title';
+import SyntheticEvent = React.SyntheticEvent;
+import FormEvent = React.FormEvent;
 
+export interface AppState {
+  newTodoTitle: string
+}
 
-class App extends React.Component<{}, {}> {
+export class App extends React.Component<{}, AppState> {
   /**
    * ストアを取得する
-   * @returns {Array}
+   * @returns {[NewTodoTitleStore]}
    */
-  static getStore(): Array<any> {
-    return []
+  static getStores(): Array<NewTodoTitleStore> {
+    return [
+      newTodoTitleStore
+    ]
   }
 
   /**
    * ステートを算出する
-   * @returns {{}}
+   * @returns {{newTodoTitle: string}}
    */
-  static calculateState() {
-    return {}
+  static calculateState(): AppState {
+    return {
+      newTodoTitle: newTodoTitleStore.getState()
+    }
   }
 
   /**
@@ -28,9 +39,20 @@ class App extends React.Component<{}, {}> {
    * @returns {any}
    */
   render() {
+    // キャッシュ
+    const { newTodoTitle } = this.state;
+
+    // JSXテンプレート
     return (
-      <div>
-        <h1>Hello, world!</h1>
+      <div className="app">
+        <header className="app__header">
+          <h1>TodoMVC</h1>
+        </header>
+        <main role="main" className="app__main">
+          <form action="post">
+            <p><input type="text" value={newTodoTitle}  placeholder="to do something..." /></p>
+          </form>
+        </main>
       </div>
     );
   }
